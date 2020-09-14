@@ -131,6 +131,12 @@ func CreateRepo(request Repository) (*Repository, error) {
 
 The library provides a convenient package for mocking requests and getting a particular response. The mock key is generated using the ``HTTP method``, the ``request URL`` and the ``request body``. Every request with these same elements will return the same mock.
 
+In order to use the mocking features you need to import the corresponding package:
+
+```go
+import "github.com/federicoleon/go-httpclient/gohttp_mock"
+```
+
 ### Starting the mock server:
 ```go
 func TestMain(m *testing.M) {
