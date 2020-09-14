@@ -23,7 +23,7 @@ func CreateRepo(request Repository) (*Repository, error) {
 		return nil, err
 	}
 
-	if response.StatusCode() != http.StatusCreated {
+	if response.StatusCode != http.StatusCreated {
 		var githubError GithubError
 		if err := response.UnmarshalJson(&githubError); err != nil {
 			return nil, errors.New("error processing github error response when creating a new repo")
