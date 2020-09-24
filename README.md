@@ -36,7 +36,7 @@ client := gohttp.NewBuilder().
 	SetResponseTimeout(3 * time.Second).
 
 	// Configure the User-Agent header that will be used for all of the requests:
-	SetUserAgent("Fedes-Computer").
+	SetUserAgent("Your-User-Agent").
 
 	// Finally, build the client and start using it!
 	Build()
@@ -141,7 +141,7 @@ import "github.com/federicoleon/go-httpclient/gohttp_mock"
 ```go
 func TestMain(m *testing.M) {
 	// Tell the HTTP library to mock any further requests from here.
-	gohttp_mock.StartMockServer()
+	gohttp_mock.MockupServer.Start()
 
 	// Start the test cases for this pacakge:
 	os.Exit(m.Run())
@@ -154,10 +154,10 @@ Once you start the mock server, every request will be handled by this server and
 
 ```go
 // Delete all mocks in every new test case to ensure a clean environment:
-gohttp_mock.DeleteMocks()
+gohttp_mock.MockupServer.DeleteMocks()
 
 // Configure a new mock:
-gohttp_mock.AddMock(gohttp_mock.Mock{
+gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 	Method:      http.MethodPost,
 	Url:         "https://api.github.com/user/repos",
 	RequestBody: `{"name":"test-repo","private":true}`,
@@ -171,10 +171,10 @@ In this case, we're telling the client that when we send a POST request against 
 
 ```go
 // Delete all mocks in every new test case to ensure a clean environment:
-gohttp_mock.DeleteMocks()
+gohttp_mock.MockupServer.DeleteMocks()
 
 // Configure a new mock:
-gohttp_mock.AddMock(gohttp_mock.Mock{
+gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 	Method:      http.MethodPost,
 	Url:         "https://api.github.com/user/repos",
 	RequestBody: `{"name":"test-repo","private":true}`,
