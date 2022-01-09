@@ -24,7 +24,7 @@ const (
 func (c *httpClient) do(method string, url string, headers http.Header, body interface{}) (*core.Response, error) {
 	fullHeaders := c.getRequestHeaders(headers)
 
-	requestBody, err := c.getRequestBody(fullHeaders.Get("Content-Type"), body)
+	requestBody, err := c.getRequestBody(fullHeaders.Get(gomime.HeaderContentType), body)
 	if err != nil {
 		return nil, err
 	}
