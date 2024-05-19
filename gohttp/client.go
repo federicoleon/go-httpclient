@@ -1,9 +1,10 @@
 package gohttp
 
 import (
-	"github.com/federicoleon/go-httpclient/core"
 	"net/http"
 	"sync"
+
+	"github.com/federicoleon/go-httpclient/core"
 )
 
 type httpClient struct {

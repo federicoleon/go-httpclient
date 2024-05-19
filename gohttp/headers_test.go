@@ -6,6 +6,8 @@ import (
 )
 
 func TestGetRequestHeaders(t *testing.T) {
+	t.Parallel()
+
 	// Initialization
 	client := httpClient{}
 	commonHeaders := make(http.Header)

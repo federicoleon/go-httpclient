@@ -2,47 +2,65 @@ package gohttp
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetRequestBody(t *testing.T) {
+	t.Parallel()
+
 	// Initialization:
 	client := httpClient{}
 
-	t.Run("NoBodyNilResponse", func(t *testing.T) {
+	t.Run("no body nil response", func(tt *testing.T) {
+		tt.Parallel()
+
 		// Execution
 		body, err := client.getRequestBody("", nil)
 
-		// Validation
-		if err != nil {
-			t.Error("no error expected when passing a nil body")
-		}
-
-		if body != nil {
-			t.Error("no body expected when passing a nil body")
-		}
+		assert.Nil(tt, err)
+		assert.Nil(tt, body)
 	})
 
-	t.Run("BodyWithJson", func(t *testing.T) {
+	t.Run("body with json", func(tt *testing.T) {
+		tt.Parallel()
+
 		// Execution
 		requestBody := []string{"one", "two"}
 
 		body, err := client.getRequestBody("application/json", requestBody)
 
 		// Validation
-		if err != nil {
-			t.Error("no error expected when marshaling slice as json")
-		}
-
-		if string(body) != `["one","two"]` {
-			t.Error("invalid json body obtained")
-		}
+		assert.Nil(tt, err)
+		assert.NotNil(tt, body)
+		assert.EqualValues(tt, `["one","two"]`, string(body))
 	})
 
-	t.Run("BodyWithXml", func(t *testing.T) {
+	t.Run("body with xml", func(tt *testing.T) {
+		tt.Parallel()
 
+		// Execution
+		requestBody := []string{"one", "two"}
+
+		body, err := client.getRequestBody("application/xml", requestBody)
+
+		// Validation
+		assert.Nil(tt, err)
+		assert.NotNil(tt, body)
+		assert.EqualValues(tt, `<string>one</string><string>two</string>`, string(body))
 	})
 
-	t.Run("BodyWithJsonAsDefault", func(t *testing.T) {
+	t.Run("body with json as default", func(tt *testing.T) {
+		tt.Parallel()
 
+		// Execution
+		requestBody := []string{"one", "two"}
+
+		body, err := client.getRequestBody("", requestBody)
+
+		// Validation
+		assert.Nil(tt, err)
+		assert.NotNil(tt, body)
+		assert.EqualValues(tt, `["one","two"]`, string(body))
 	})
 }

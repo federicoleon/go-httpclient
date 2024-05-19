@@ -49,7 +49,7 @@ The ``Client`` interface provides convenient methods that you can use to perform
 
 Take a look at all of the [EXAMPLES](examples) for more information.
 
-### Get
+### GET
 
 ```go
 type Endpoints struct {
@@ -83,7 +83,7 @@ func GetEndpoints() (*Endpoints, error) {
 }
 ```
 
-### Post
+### POST
 
 ```go
 

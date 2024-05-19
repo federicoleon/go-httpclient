@@ -20,6 +20,6 @@ func (r *Response) String() string {
 	return string(r.Body)
 }
 
-func (r *Response) UnmarshalJson(target interface{}) error {
+func (r *Response) UnmarshalJSON(target interface{}) error {
 	return json.Unmarshal(r.Bytes(), target)
 }

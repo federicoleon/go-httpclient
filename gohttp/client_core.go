@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"github.com/federicoleon/go-httpclient/core"
-	"github.com/federicoleon/go-httpclient/gohttp_mock"
-	"github.com/federicoleon/go-httpclient/gomime"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/federicoleon/go-httpclient/core"
+	"github.com/federicoleon/go-httpclient/gomime"
 )
 
 const (
@@ -24,7 +24,7 @@ const (
 func (c *httpClient) do(method string, url string, headers http.Header, body interface{}) (*core.Response, error) {
 	fullHeaders := c.getRequestHeaders(headers)
 
-	requestBody, err := c.getRequestBody(fullHeaders.Get("Content-Type"), body)
+	requestBody, err := c.getRequestBody(fullHeaders.Get(gomime.HeaderContentType), body)
 	if err != nil {
 		return nil, err
 	}
@@ -41,8 +41,11 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 		return nil, err
 	}
 
-	defer response.Body.Close()
-	responseBody, err := ioutil.ReadAll(response.Body)
+	if response.Body != nil {
+		defer response.Body.Close()
+	}
+
+	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -53,31 +56,34 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 		Headers:    response.Header,
 		Body:       responseBody,
 	}
+
 	return &finalResponse, nil
 }
 
 func (c *httpClient) getHttpClient() core.HttpClient {
-	if gohttp_mock.MockupServer.IsEnabled() {
-		return gohttp_mock.MockupServer.GetMockedClient()
-	}
-
 	c.clientOnce.Do(func() {
-		if c.builder.client != nil {
+		if c.builder != nil && c.builder.client != nil {
 			c.client = c.builder.client
 			return
 		}
-		c.client = &http.Client{
-			Timeout: c.getConnectionTimeout() + c.getResponseTimeout(),
-			Transport: &http.Transport{
-				MaxIdleConnsPerHost:   c.getMaxIdleConnections(),
-				ResponseHeaderTimeout: c.getResponseTimeout(),
-				DialContext: (&net.Dialer{
-					Timeout: c.getConnectionTimeout(),
-				}).DialContext,
-			},
-		}
+
+		c.client = c.getDefaultHTTPClient()
 	})
+
 	return c.client
+}
+
+func (c *httpClient) getDefaultHTTPClient() *http.Client {
+	return &http.Client{
+		Timeout: c.getConnectionTimeout() + c.getResponseTimeout(),
+		Transport: &http.Transport{
+			MaxIdleConnsPerHost:   c.getMaxIdleConnections(),
+			ResponseHeaderTimeout: c.getResponseTimeout(),
+			DialContext: (&net.Dialer{
+				Timeout: c.getConnectionTimeout(),
+			}).DialContext,
+		},
+	}
 }
 
 func (c *httpClient) getMaxIdleConnections() int {
