@@ -15,12 +15,17 @@ type httpClient struct {
 }
 
 type Client interface {
+	Do(req *http.Request) (*core.Response, error)
 	Get(url string, headers ...http.Header) (*core.Response, error)
 	Post(url string, body interface{}, headers ...http.Header) (*core.Response, error)
 	Put(url string, body interface{}, headers ...http.Header) (*core.Response, error)
 	Patch(url string, body interface{}, headers ...http.Header) (*core.Response, error)
 	Delete(url string, headers ...http.Header) (*core.Response, error)
 	Options(url string, headers ...http.Header) (*core.Response, error)
+}
+
+func (c *httpClient) Do(req *http.Request) (*core.Response, error) {
+	return c.do(req.Method, req.URL.String(), req.Header, req.Body)
 }
 
 func (c *httpClient) Get(url string, headers ...http.Header) (*core.Response, error) {
