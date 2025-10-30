@@ -106,11 +106,11 @@ func (c *httpClient) getResponseTimeout() time.Duration {
 }
 
 func (c *httpClient) getConnectionTimeout() time.Duration {
-	if c.builder.connectionTimeout > 0 {
-		return c.builder.connectionTimeout
-	}
 	if c.builder.disableTimeouts {
 		return 0
+	}
+	if c.builder.connectionTimeout > 0 {
+		return c.builder.connectionTimeout
 	}
 	return defaultConnectionTimeout
 }
