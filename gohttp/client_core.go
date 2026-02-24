@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -125,7 +127,28 @@ func (c *httpClient) getRequestBody(contentType string, body interface{}) ([]byt
 	case gomime.ContentTypeXml:
 		return xml.Marshal(body)
 
+	case gomime.ContentTypeFormUrlencoded:
+		return c.encodeFormBody(body)
+
 	default:
 		return json.Marshal(body)
+	}
+}
+
+func (c *httpClient) encodeFormBody(body interface{}) ([]byte, error) {
+	switch v := body.(type) {
+	case url.Values:
+		return []byte(v.Encode()), nil
+
+	case map[string]interface{}:
+		values := url.Values{}
+		for k, val := range v {
+			values.Set(k, fmt.Sprint(val))
+		}
+
+		return []byte(values.Encode()), nil
+
+	default:
+		return nil, errors.New("form body must be url.Values or map")
 	}
 }

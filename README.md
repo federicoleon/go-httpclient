@@ -1,6 +1,7 @@
 # Go HTTP Client
 
-A production-ready HTTP client in Go with lots of useful features and using nothing more than the standard library of the language.
+A production-ready HTTP client in Go with lots of useful features and using nothing more than the standard library of
+the language.
 
 ## Installation
 
@@ -10,6 +11,7 @@ require github.com/federicoleon/go-httpclient
 ```
 
 ## Usage
+
 In order to use the library for making HTTP calls you need to import the corresponding HTTP package:
 
 ```go
@@ -17,7 +19,9 @@ import "github.com/federicoleon/go-httpclient/gohttp"
 ```
 
 ## Configuring the client
-Once you have imported the package, you can now start using the client. First you need to configure and build the client as you need:
+
+Once you have imported the package, you can now start using the client. First you need to configure and build the client
+as you need:
 
 ```go
 headers := make(http.Header)
@@ -43,9 +47,12 @@ client := gohttp.NewBuilder().
 ```
 
 ## Performing HTTP calls
-The ``Client`` interface provides convenient methods that you can use to perform different HTTP calls. If you get an error then you can safely ignore the response object since it won't be there.
 
-**Important:** There is no need to read & close anything from the response since the client is doing all of this for you. You just need to get the response and start using it!
+The ``Client`` interface provides convenient methods that you can use to perform different HTTP calls. If you get an
+error then you can safely ignore the response object since it won't be there.
+
+**Important:** There is no need to read & close anything from the response since the client is doing all of this for
+you. You just need to get the response and start using it!
 
 Take a look at all of the [EXAMPLES](examples) for more information.
 
@@ -129,7 +136,9 @@ func CreateRepo(request Repository) (*Repository, error) {
 
 ## Testing
 
-The library provides a convenient package for mocking requests and getting a particular response. The mock key is generated using the ``HTTP method``, the ``request URL`` and the ``request body``. Every request with these same elements will return the same mock.
+The library provides a convenient package for mocking requests and getting a particular response. The mock key is
+generated using the ``HTTP method``, the ``request URL`` and the ``request body``. Every request with these same
+elements will return the same mock.
 
 In order to use the mocking features you need to import the corresponding package:
 
@@ -138,6 +147,7 @@ import "github.com/federicoleon/go-httpclient/gohttp_mock"
 ```
 
 ### Starting the mock server:
+
 ```go
 func TestMain(m *testing.M) {
 	// Tell the HTTP library to mock any further requests from here.
@@ -148,7 +158,9 @@ func TestMain(m *testing.M) {
 }
 ```
 
-Once you start the mock server, every request will be handled by this server and will not be sent against the real API. If there is no mock matching the current request you'll get an error saying ``no mock matching {METHOD} from '{URL}' with given body``.
+Once you start the mock server, every request will be handled by this server and will not be sent against the real API.
+If there is no mock matching the current request you'll get an error saying
+``no mock matching {METHOD} from '{URL}' with given body``.
 
 ### Configuring a given HTTP mock:
 
@@ -166,8 +178,8 @@ gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 })
 ```
 
-In this case, we're telling the client that when we send a POST request against that URL and with that body, we want that particular error. In this case, no response was returned. Let's see how you can configure a particular response:
-
+In this case, we're telling the client that when we send a POST request against that URL and with that body, we want
+that particular error. In this case, no response was returned. Let's see how you can configure a particular response:
 
 ```go
 // Delete all mocks in every new test case to ensure a clean environment:

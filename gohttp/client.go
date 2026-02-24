@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/federicoleon/go-httpclient/core"
+	"github.com/federicoleon/go-httpclient/gomime"
 )
 
 type httpClient struct {
@@ -22,6 +23,8 @@ type Client interface {
 	Patch(url string, body interface{}, headers ...http.Header) (*core.Response, error)
 	Delete(url string, headers ...http.Header) (*core.Response, error)
 	Options(url string, headers ...http.Header) (*core.Response, error)
+
+	PostForm(url string, body interface{}, headers ...http.Header) (*core.Response, error)
 }
 
 func (c *httpClient) Do(req *http.Request) (*core.Response, error) {
@@ -50,4 +53,15 @@ func (c *httpClient) Delete(url string, headers ...http.Header) (*core.Response,
 
 func (c *httpClient) Options(url string, headers ...http.Header) (*core.Response, error) {
 	return c.do(http.MethodOptions, url, getHeaders(headers...), nil)
+}
+
+func (c *httpClient) PostForm(url string, body interface{}, headers ...http.Header) (*core.Response, error) {
+	h := getHeaders(headers...)
+	if h == nil {
+		h = http.Header{}
+	}
+
+	h.Set(gomime.HeaderContentType, gomime.ContentTypeFormUrlencoded)
+
+	return c.do(http.MethodPost, url, h, body)
 }
